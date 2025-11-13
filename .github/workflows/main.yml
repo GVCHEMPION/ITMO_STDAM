@@ -7,8 +7,10 @@ on:
   pull_request:
     branches: [ "main", "master" ]
 
+# Определение задач (jobs)
 jobs:
   test:
+    # Стратегия матричного тестирования на разных ОС
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
@@ -16,18 +18,22 @@ jobs:
     runs-on: ${{ matrix.os }}
     
     steps:
+      # Шаг 1: Клонирование репозитория
       - name: Checkout repository
         uses: actions/checkout@v4
       
+      # Шаг 2: Установка Python (если используете Python)
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       
+      # Шаг 3: Запуск unit-тестов с unittest
       - name: Run unit tests
         run: |
-          python -m unittest test_shapes.py -v
+          python -m unittest discover -s . -p "test_*.py" -v
       
+      # Шаг 4: Отображение результатов тестирования
       - name: Test Summary
         if: always()
         run: echo "Tests completed on ${{ matrix.os }}"
